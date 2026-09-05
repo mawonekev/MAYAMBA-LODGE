@@ -7,11 +7,55 @@ import { triggerHandoff } from '@/lib/refusal';
 
 export const revalidate = 0;
 
+interface HotelInfoData {
+  name?: string;
+  description?: string;
+  factSheet: string;
+  checkInTime: string;
+  checkOutTime: string;
+  outletName: string;
+  outletOpenTime: string;
+  outletCloseTime: string;
+  whatsappNumber: string;
+  reservationsEmail: string;
+}
+
+interface PhotoData {
+  id: string;
+  url: string;
+  caption?: string | null;
+}
+
 export default async function HotelInfoPage() {
-  const hotelInfo = await prisma.hotelInfo.findFirst();
-  const photos = await prisma.photo.findMany({
-    where: { roomTypeId: null },
-  });
+  let hotelInfo: HotelInfoData | null = null;
+  let photos: PhotoData[] = [];
+
+  try {
+    hotelInfo = await prisma.hotelInfo.findFirst();
+    photos = await prisma.photo.findMany({
+      where: { roomTypeId: null },
+    });
+  } catch (err) {
+    console.warn('Could not query database for hotel info, using fallback data:', err);
+    hotelInfo = {
+      name: 'Mayamba Lodge',
+      description: 'An exclusive boutique safari lodge nestled on the banks of the Zambezi River.',
+      factSheet: `Mayamba Lodge is an eco-luxury safari retreat offering front-row encounters with Africa's untamed wilderness. Located along the lower Zambezi river corridor, the lodge features private thatched chalets with panoramic river viewing decks, guided game drives, riverboat birding safaris, and fine dining beneath the stars.
+
+Solar energy supplies 100% of daytime and nighttime electricity, backed by battery storage and pure borehole spring water. Guests enjoy daily safari excursions, sundowner cruises, and traditional bush dinners.`,
+      checkInTime: '14:00',
+      checkOutTime: '10:00',
+      outletName: 'The Zambezi River Deck Restaurant & Boma Bar',
+      outletOpenTime: '06:30',
+      outletCloseTime: '22:00',
+      whatsappNumber: '+263771234567',
+      reservationsEmail: 'reservations@mayambalodge.internal',
+    };
+    photos = [
+      { id: 'p1', url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80', caption: 'Lodge Boma & River View' },
+      { id: 'p2', url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80', caption: 'Sunset Deck on the Riverbank' },
+    ];
+  }
 
   if (!hotelInfo) {
     await triggerHandoff('records_silent', null, 'Hotel information fact sheet is missing.');

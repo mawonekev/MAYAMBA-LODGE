@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "postinstall": "prisma generate",
     "db:start": "node scripts/db.js start",
     "db:stop": "node scripts/db.js stop",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "db:deploy": "prisma migrate deploy && prisma db seed",
+    "db:push": "prisma db push && prisma db seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

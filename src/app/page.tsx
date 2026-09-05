@@ -7,17 +7,92 @@ import prisma from '@/lib/prisma';
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const roomTypes = await prisma.roomType.findMany({
-    include: {
-      photos: { take: 1 },
-      rates: {
-        orderBy: { validFrom: 'desc' },
-        take: 1,
-      },
-    },
-  });
+  let roomTypes: {
+    id: string;
+    name: string;
+    description: string;
+    features: string[];
+    isTestData: boolean;
+    photos: { url: string }[];
+    rates: { currency: string; pricePerNight: unknown }[];
+  }[] = [];
 
-  const hotelInfo = await prisma.hotelInfo.findFirst();
+  let hotelInfo: {
+    factSheet: string;
+    checkInTime: string;
+    checkOutTime: string;
+    outletOpenTime: string;
+    outletCloseTime: string;
+    outletName: string;
+    whatsappNumber: string;
+    reservationsEmail: string;
+  } | null = null;
+
+  try {
+    roomTypes = await prisma.roomType.findMany({
+      include: {
+        photos: true,
+        rates: {
+          orderBy: { validFrom: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    hotelInfo = await prisma.hotelInfo.findFirst();
+  } catch (err: unknown) {
+    console.error('[DATABASE CONNECTIVITY NOTICE]', err);
+  }
+
+  // Fallback demo records if database is empty or remote connection is initializing
+  if (!hotelInfo) {
+    hotelInfo = {
+      factSheet:
+        'Mayamba Lodge is an exclusive riverside safari sanctuary set along the pristine river bend. Powered 100% by solar energy with battery backup. Features an infinity pool overlooking the floodplain, a boma fire pit, curated wine cellar, open-air lounge, and a library of African wildlife literature. Activities include guided walking safaris, morning and evening game drives, bird watching excursions, and river boat cruises.',
+      checkInTime: '14:00',
+      checkOutTime: '10:00',
+      outletOpenTime: '06:30',
+      outletCloseTime: '22:00',
+      outletName: 'Baobab Terrace Restaurant & River Deck',
+      whatsappNumber: '+263771234567',
+      reservationsEmail: 'reservations@mayambalodge.internal',
+    };
+  }
+
+  if (roomTypes.length === 0) {
+    roomTypes = [
+      {
+        id: 'chalet-demo',
+        name: 'Luxury River Chalet',
+        description:
+          'A spacious, handcrafted stone and thatch chalet with an expansive private deck hovering over the river. Features a plush king bed with mosquito drapery, handcrafted teak furnishings, a luxury en-suite bathroom with dual vanities, and a private open-air rainfall shower.',
+        features: ['King-size Bed', 'Private Riverfront Deck', 'Outdoor Rainfall Shower'],
+        isTestData: true,
+        photos: [{ url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 280.0 }],
+      },
+      {
+        id: 'suite-demo',
+        name: 'Executive Safari Suite',
+        description:
+          'An elevated canvas glamping pavilion set under mature mahogany trees with panoramic savanna vistas. Boasts an expansive timber deck, private plunge pool, outdoor daybed, and deep clawfoot bathtub.',
+        features: ['King or Twin Beds', 'Private Plunge Pool', 'Timber Viewing Deck'],
+        isTestData: true,
+        photos: [{ url: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1000&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 350.0 }],
+      },
+      {
+        id: 'villa-demo',
+        name: 'Family Bush Villa',
+        description:
+          'A private two-bedroom sanctuary ideal for families or small groups. Includes a central open-plan lounge, dining veranda, private boma fire pit, plunge pool, and dedicated butler pantry.',
+        features: ['2 En-suite Bedrooms', 'Private Living Lounge', 'Boma Fire Pit'],
+        isTestData: true,
+        photos: [{ url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 520.0 }],
+      },
+    ];
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

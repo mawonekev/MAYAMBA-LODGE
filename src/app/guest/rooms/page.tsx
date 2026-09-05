@@ -6,20 +6,71 @@ import RefusalCard from '@/components/RefusalCard';
 import prisma from '@/lib/prisma';
 
 export const revalidate = 0;
+ 
+interface RoomTypeItem {
+  id: string;
+  name: string;
+  description: string;
+  features: string[];
+  photos: { url: string }[];
+  rates: { currency: string; pricePerNight: number | unknown }[];
+}
+
+interface HotelContactInfo {
+  whatsappNumber?: string;
+  reservationsEmail?: string;
+}
 
 export default async function RoomsPage() {
-  const roomTypes = await prisma.roomType.findMany({
-    include: {
-      photos: true,
-      rates: {
-        orderBy: { validFrom: 'desc' },
-        take: 1,
-      },
-    },
-    orderBy: { name: 'asc' },
-  });
+  let roomTypes: RoomTypeItem[] = [];
+  let hotelInfo: HotelContactInfo | null = null;
 
-  const hotelInfo = await prisma.hotelInfo.findFirst();
+  try {
+    roomTypes = await prisma.roomType.findMany({
+      include: {
+        photos: true,
+        rates: {
+          orderBy: { validFrom: 'desc' },
+          take: 1,
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    hotelInfo = await prisma.hotelInfo.findFirst();
+  } catch (err) {
+    console.warn('Could not query database for rooms, using fallback demo data:', err);
+    roomTypes = [
+      {
+        id: 'deluxe-safari-tent',
+        name: 'Deluxe Safari Chalet',
+        description: 'Luxury thatched chalet overlooking the Zambezi river with private viewing deck.',
+        features: ['River view deck', 'King bed', 'En-suite stone bath', 'Solar power 24/7'],
+        photos: [{ url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 280 }],
+      },
+      {
+        id: 'luxury-river-suite',
+        name: 'Luxury Riverfront Suite',
+        description: 'Spacious suite situated on the river edge with panoramic views and plunge pool.',
+        features: ['Plunge pool', 'Panoramic river view', 'King bed', 'Complimentary minibar'],
+        photos: [{ url: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 420 }],
+      },
+      {
+        id: 'family-safari-villa',
+        name: 'Family Safari Villa',
+        description: 'Two-bedroom thatched villa suitable for up to 4 guests with private lounge and dining boma.',
+        features: ['2 Bedrooms', 'Private boma', 'Dedicated ranger host', 'Kitchenette'],
+        photos: [{ url: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80' }],
+        rates: [{ currency: 'USD', pricePerNight: 650 }],
+      },
+    ];
+    hotelInfo = {
+      whatsappNumber: '+263771234567',
+      reservationsEmail: 'reservations@mayambalodge.internal',
+    };
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

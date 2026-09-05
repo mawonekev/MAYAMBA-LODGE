@@ -155,3 +155,22 @@ npm run dev
 ```
 - Guest App: `http://localhost:3000`
 - Staff Admin Portal: `http://localhost:3000/staff/login` (Default demo credentials: `admin` / `admin123`)
+
+---
+
+## 6. Vercel Production Hardening & Remote Database Configuration
+
+### Root Cause of Vercel Exception Digest
+- **Prisma Engine Platform Mismatch**: Vercel serverless environments run on Linux (`rhel-openssl-3.0.x`). When Prisma Client is generated locally on Windows, the Linux query engine binary was missing.
+- **Unreachable Localhost PostgreSQL in Cloud**: Local development relied on `@embedded-postgres` listening on `localhost:5432`. On Vercel, unhandled connection timeouts in server components resulted in unhandled 500 errors.
+- **Missing App Router Error Boundary**: Without `error.tsx`, uncaught server-side exceptions bubble directly to Vercel's generic error page.
+
+### Implemented Resolutions
+1. **Multi-Platform Prisma Binaries**: Configured `binaryTargets = ["native", "rhel-openssl-3.0.x", "rhel-openssl-1.0.x", "debian-openssl-3.0.x"]` in `prisma/schema.prisma`.
+2. **Postinstall Engine Generation**: Added `"postinstall": "prisma generate"` and `"build": "prisma generate && next build"` in `package.json`.
+3. **App Error Boundaries**: Added `src/app/error.tsx` and `src/app/global-error.tsx` offering immediate recovery options and front-desk fallback contacts.
+4. **Server Component Resilience**: Wrapped direct Prisma queries in `src/app/page.tsx`, `src/app/guest/rooms/page.tsx`, `src/app/guest/rooms/[id]/page.tsx`, `src/app/guest/hotel-info/page.tsx`, and `src/lib/refusal.ts` in defensive `try/catch` with fallback demo records and contacts if remote database is initializing.
+5. **Remote Database Setup**:
+   - Provide a managed PostgreSQL connection string (Neon, Supabase, Vercel Postgres, AWS RDS) via the `DATABASE_URL` environment variable in the Vercel dashboard.
+   - Run `npm run db:push` to apply the schema and seed initial verified records into the remote PostgreSQL database.
+
