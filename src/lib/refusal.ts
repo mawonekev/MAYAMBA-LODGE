@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import { HandoffType } from '@/types';
 
 export type RefusalReason = 'records_silent' | 'refund_or_dispute' | 'payment_unclear';
 

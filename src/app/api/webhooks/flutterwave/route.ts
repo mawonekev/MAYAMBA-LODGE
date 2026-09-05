@@ -21,7 +21,6 @@ export async function POST(req: NextRequest) {
     const payload = await req.json();
     console.log('[FLUTTERWAVE WEBHOOK] Received event:', payload?.event);
 
-    const event = payload?.event;
     const data = payload?.data;
 
     if (!data || !data.flw_ref || !data.tx_ref) {
@@ -49,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Find payment record by bookingId or paymentId stored in tx_ref
     // tx_ref format: booking_{bookingId} or payment_{paymentId} or direct id
-    let payment = await prisma.payment.findFirst({
+    const payment = await prisma.payment.findFirst({
       where: {
         OR: [
           { id: txRef.replace(/^payment_/, '') },
