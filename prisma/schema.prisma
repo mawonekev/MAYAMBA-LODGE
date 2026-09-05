@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guest {
+  id           String        @id @default(cuid())
+  phoneNumber  String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+  bookings     Booking[]
+  contentFlags ContentFlag[]
+  otpCodes     OtpCode[]
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  guest     Guest    @relation(fields: [guestId], references: [id])
+  guestId   String
+  code      String
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Staff {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  role         String   // "staff" or "owner"
+  createdAt    DateTime @default(now())
+}
+
+model RoomType {
+  id           String         @id @default(cuid())
+  name         String
+  description  String
+  features     String[]
+  isTestData   Boolean        @default(true)
+  photos       Photo[]
+  rates        Rate[]
+  availability Availability[]
+  bookings     Booking[]
+}
+
+model Photo {
+  id         String    @id @default(cuid())
+  url        String
+  caption    String?
+  roomType   RoomType? @relation(fields: [roomTypeId], references: [id])
+  roomTypeId String?
+  isTestData Boolean   @default(true)
+}
+
+model Rate {
+  id            String   @id @default(cuid())
+  roomType      RoomType @relation(fields: [roomTypeId], references: [id])
+  roomTypeId    String
+  pricePerNight Decimal
+  currency      String
+  validFrom     DateTime
+  validTo       DateTime
+  isTestData    Boolean  @default(true)
+}
+
+model Availability {
+  id         String   @id @default(cuid())
+  roomType   RoomType @relation(fields: [roomTypeId], references: [id])
+  roomTypeId String
+  date       DateTime
+  roomsOpen  Int
+  isTestData Boolean  @default(true)
+
+  @@unique([roomTypeId, date])
+}
+
+model HotelInfo {
+  id                String  @id @default(cuid())
+  factSheet         String
+  checkInTime       String
+  checkOutTime      String
+  outletOpenTime    String
+  outletCloseTime   String
+  outletName        String
+  whatsappNumber    String
+  reservationsEmail String
+  isTestData        Boolean @default(true)
+}
+
+model Booking {
+  id               String   @id @default(cuid())
+  confirmationCode String   @unique
+  guest            Guest    @relation(fields: [guestId], references: [id])
+  guestId          String
+  roomType         RoomType @relation(fields: [roomTypeId], references: [id])
+  roomTypeId       String
+  stayDateFrom     DateTime
+  stayDateTo       DateTime
+  status           String   // "confirmed", "cancelled", "no_show"
+  payment          Payment?
+  isTestData       Boolean  @default(true)
+}
+
+model Payment {
+  id             String   @id @default(cuid())
+  booking        Booking  @relation(fields: [bookingId], references: [id])
+  bookingId      String   @unique
+  amount         Decimal
+  currency       String
+  status         String   // "paid", "not_paid", "unclear_pending_review"
+  flutterwaveRef String?  @unique
+  createdAt      DateTime @default(now())
+}
+
+model ContentFlag {
+  id          String   @id @default(cuid())
+  guest       Guest    @relation(fields: [guestId], references: [id])
+  guestId     String
+  description String
+  status      String   @default("open")
+  createdAt   DateTime @default(now())
+}
+
+model SearchMiss {
+  id        String   @id @default(cuid())
+  dateFrom  DateTime
+  dateTo    DateTime
+  createdAt DateTime @default(now())
+}
+
+model AvailabilitySearchEvent {
+  id        String   @id @default(cuid())
+  dateFrom  DateTime
+  dateTo    DateTime
+  createdAt DateTime @default(now())
+}
+// Logs every availability search, successful or not, so the conversion metric in section 12 has a real denominator.
+
+model Handoff {
+  id        String   @id @default(cuid())
+  reason    String   // "records_silent", "refund_or_dispute", "payment_unclear"
+  guestId   String?
+  createdAt DateTime @default(now())
+}
