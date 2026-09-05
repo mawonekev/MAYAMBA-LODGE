@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import WildlifeBackdrop from '@/components/WildlifeBackdrop';
 
 export const metadata: Metadata = {
   title: 'Mayamba Lodge — Exclusive Riverside Safari Sanctuary',
@@ -16,6 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <WildlifeBackdrop />
         <div className="test-data-banner">
           <span>⚠️ TEST DATA PILOT RUN</span>
           <span>•</span>

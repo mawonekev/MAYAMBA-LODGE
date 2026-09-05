@@ -174,3 +174,23 @@ npm run dev
    - Provide a managed PostgreSQL connection string (Neon, Supabase, Vercel Postgres, AWS RDS) via the `DATABASE_URL` environment variable in the Vercel dashboard.
    - Run `npm run db:push` to apply the schema and seed initial verified records into the remote PostgreSQL database.
 
+---
+
+## 7. Dynamic Wildlife Safari Backdrop System
+
+### Implementation Details
+- **Static Assets**: High-resolution bespoke African wildlife photography stored in `public/images/wildlife/`:
+  - `elephants-river.jpg`: Breeding herd of African elephants wading across the Zambezi river at golden hour.
+  - `leopard-savanna.jpg`: African savanna tree leopard resting on acacia branch at dawn.
+  - `lion-sunset.jpg`: Male lion on granite kopje overlooking savanna at sunset.
+- **Atmospheric Global Component (`src/components/WildlifeBackdrop.tsx`)**:
+  - Mounted globally in `src/app/layout.tsx`.
+  - Smooth cross-fade transition between scenes with slow subtle scale zoom (`transform: scale(1.04) -> scale(1)`).
+  - Multi-stop vignette gradient overlay preserving maximum readability of all foreground text and cards.
+  - Interactive ambient switcher pill in bottom right allowing guests to select their backdrop or let it cycle naturally.
+- **Glassmorphic Surface Polish**:
+  - Elevated `.card` elements with `backdrop-filter: blur(14px)` and `rgba(21, 28, 23, 0.88)` translucent background.
+- **Homepage Wildlife Showcase (`src/app/page.tsx`)**:
+  - Integrated "Front-Row Wildlife Encounters" section showcasing indigenous species and migratory patterns.
+
+

@@ -102,11 +102,16 @@ export default async function HomePage() {
         {/* Hero Section */}
         <section className="hero">
           <div className="container">
+            <div style={{ marginBottom: '0.75rem' }}>
+              <span className="badge badge-gold" style={{ letterSpacing: '0.12em', padding: '0.35rem 0.85rem' }}>
+                🐘 Zambezi River Wildlife Sanctuary • 100% Solar Eco-Lodge
+              </span>
+            </div>
             <div className="hero-subtitle">Authentic Zimbabwean Wilderness</div>
             <h1 className="hero-title">Experience Untamed River Luxury</h1>
             <p className="hero-desc">
               Perched along the scenic riverbank, Mayamba Lodge offers eco-conscious solar-powered
-              chalets, private plunge pools, and intimate wildlife encounters.
+              chalets, private plunge pools, and intimate wildlife encounters right from your deck.
             </p>
 
             {/* Quick Availability Action */}
@@ -193,6 +198,81 @@ export default async function HomePage() {
                 </div>
               );
             })}
+          </div>
+        </section>
+
+        {/* Wildlife Showcase */}
+        <section className="container" style={{ padding: '0 1rem 4rem' }}>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <span className="badge badge-gold" style={{ marginBottom: '0.5rem' }}>
+              The Living Zambezi Ecosystem
+            </span>
+            <h2 style={{ marginBottom: '0.5rem' }}>Front-Row Wildlife Encounters</h2>
+            <p style={{ maxWidth: '650px', margin: '0 auto' }}>
+              Our chalets sit along active wildlife migratory corridors. Guests regularly observe breeding herds of elephants crossing the river, leopards resting in ancient acacias, and lions surveying the savanna from granite kopjes.
+            </p>
+          </div>
+
+          <div className="grid-3">
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div
+                style={{
+                  height: '220px',
+                  backgroundImage: "url('/images/wildlife/elephants-river.jpg')",
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div style={{ padding: '1.25rem' }}>
+                <span className="badge badge-gold" style={{ fontSize: '0.68rem', marginBottom: '0.4rem' }}>
+                  Daily River Crossing
+                </span>
+                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>Zambezi River Elephants</h3>
+                <p style={{ fontSize: '0.84rem' }}>
+                  Witness majestic breeding herds wading across shallow river channels directly in front of the lodge boma during late afternoons.
+                </p>
+              </div>
+            </div>
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div
+                style={{
+                  height: '220px',
+                  backgroundImage: "url('/images/wildlife/leopard-savanna.jpg')",
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div style={{ padding: '1.25rem' }}>
+                <span className="badge badge-gold" style={{ fontSize: '0.68rem', marginBottom: '0.4rem' }}>
+                  Dawn Game Drives
+                </span>
+                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>Savanna Tree Leopards</h3>
+                <p style={{ fontSize: '0.84rem' }}>
+                  Spot elusive leopards resting along broad albida and acacia limbs overlooking the mist-covered river floodplain.
+                </p>
+              </div>
+            </div>
+
+            <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+              <div
+                style={{
+                  height: '220px',
+                  backgroundImage: "url('/images/wildlife/lion-sunset.jpg')",
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              />
+              <div style={{ padding: '1.25rem' }}>
+                <span className="badge badge-gold" style={{ fontSize: '0.68rem', marginBottom: '0.4rem' }}>
+                  Kopje Dusk Patrol
+                </span>
+                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem' }}>Pride of the Zambezi</h3>
+                <p style={{ fontSize: '0.84rem' }}>
+                  Resident lion prides gather on elevated granite boulders at dusk before commencing their nighttime territorial rounds.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 

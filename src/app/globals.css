@@ -259,16 +259,19 @@ p {
 
 /* Cards */
 .card {
-  background: var(--bg-card);
+  background: rgba(21, 28, 23, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
-  border-color: rgba(212, 163, 75, 0.4);
+  border-color: rgba(212, 163, 75, 0.45);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55);
 }
 
 /* Badges */
@@ -518,3 +521,200 @@ p {
   .nav-links { width: 100%; overflow-x: auto; padding-bottom: 0.25rem; gap: 1rem; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   Wildlife Safari Backdrop System
+   ========================================================================== */
+.wildlife-backdrop-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #0b100d;
+}
+
+.wildlife-backdrop-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1), transform 12s ease-out;
+  will-change: opacity, transform;
+}
+
+.wildlife-backdrop-image.active {
+  opacity: 0.52;
+  transform: scale(1);
+}
+
+.wildlife-backdrop-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: 
+    radial-gradient(ellipse at 50% 20%, rgba(13, 18, 15, 0.35) 0%, rgba(13, 18, 15, 0.84) 65%, #0d120f 100%),
+    linear-gradient(180deg, rgba(13, 18, 15, 0.45) 0%, rgba(13, 18, 15, 0.65) 40%, rgba(13, 18, 15, 0.92) 80%, #0d120f 100%);
+}
+
+/* Floating Ambient Wildlife Pill in bottom corner */
+.wildlife-ambient-pill {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.wildlife-pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(18, 26, 21, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(212, 163, 75, 0.45);
+  border-radius: var(--radius-full);
+  padding: 0.45rem 0.9rem;
+  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  transition: all 0.2s ease;
+}
+
+.wildlife-pill-btn:hover {
+  background: rgba(28, 40, 32, 0.95);
+  border-color: var(--gold-primary);
+  box-shadow: 0 4px 24px var(--gold-glow);
+  transform: translateY(-1px);
+}
+
+.wildlife-pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #38b000;
+  box-shadow: 0 0 8px #38b000;
+  display: inline-block;
+  animation: pulse-green 2.5s infinite;
+}
+
+@keyframes pulse-green {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.wildlife-pill-icon {
+  font-size: 0.95rem;
+}
+
+.wildlife-pill-text {
+  color: var(--text-main);
+}
+
+.wildlife-pill-text strong {
+  color: var(--gold-light);
+  margin-right: 0.2rem;
+}
+
+.wildlife-pill-arrow {
+  font-size: 0.75rem;
+  color: var(--gold-primary);
+  margin-left: 0.2rem;
+}
+
+.wildlife-picker-menu {
+  position: absolute;
+  bottom: calc(100% + 0.6rem);
+  right: 0;
+  background: rgba(18, 25, 20, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-gold);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem;
+  min-width: 290px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+  animation: fadeInMenu 0.2s ease;
+}
+
+@keyframes fadeInMenu {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.wildlife-picker-header {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold-light);
+  margin-bottom: 0.65rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(212, 163, 75, 0.2);
+  font-weight: 600;
+}
+
+.wildlife-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 0.35rem;
+  text-align: left;
+}
+
+.wildlife-picker-item:hover {
+  background: rgba(212, 163, 75, 0.12);
+  border-color: rgba(212, 163, 75, 0.35);
+}
+
+.wildlife-picker-item.active {
+  background: rgba(212, 163, 75, 0.2);
+  border-color: var(--gold-primary);
+}
+
+.wildlife-picker-thumb {
+  width: 52px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.wildlife-picker-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.wildlife-picker-time {
+  font-size: 0.7rem;
+  color: var(--gold-light);
+}
+
+@media (max-width: 600px) {
+  .wildlife-ambient-pill {
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+  .wildlife-pill-text {
+    display: none;
+  }
+}
+
